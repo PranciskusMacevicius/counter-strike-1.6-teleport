@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>409</ID>
+      <Description>"Teleport Hack"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : hl.exe
+  Version: 
+  Date   : 2017-11-26
+  Author : Vartotojas
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(INJECT,mp.dll,8B 51 10 D9 C0) // should be unique
+alloc(newmem,$100)
+alloc(Store_Coordinates,256)
+
+label(code)
+label(x_coordinate)
+label(y_coordinate)
+label(z_coordinate)
+label(save)
+label(load)
+label(enable_save)
+label(enable_load)
+label(return)
+registersymbol(x_coordinate)
+registersymbol(y_coordinate)
+registersymbol(z_coordinate)
+registersymbol(enable_save)
+registersymbol(enable_load)
+Store_Coordinates:
+x_coordinate:
+dd 0
+y_coordinate:
+dd 0
+z_coordinate:
+dd 0
+enable_save:
+dd 0
+enable_load:
+dd 0
+
+save:
+mov [enable_save],#0
+push ebp
+mov ebp,[ecx+08]
+mov [x_coordinate],ebp
+mov ebp,[ecx+0C]
+mov [y_coordinate],ebp
+mov ebp,[ecx+10]
+mov [z_coordinate],ebp
+pop ebp
+jmp code
+
+load:
+mov [enable_load],#0
+push ebp
+mov ebp,[x_coordinate]
+mov [ecx+08],ebp
+mov ebp,[y_coordinate]
+mov [ecx+0C],ebp
+mov ebp,[z_coordinate]
+mov [ecx+10],ebp
+pop ebp
+jmp code
+
+newmem:
+cmp [enable_save],#1
+je save
+cmp [enable_load],#1
+je load
+jmp code
+
+code:
+  mov edx,[ecx+10]
+  fld st(0)
+  jmp return
+
+INJECT:
+  jmp newmem
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 8B 51 10 D9 C0
+
+unregistersymbol(INJECT)
+unregistersymbol(x_coordinate)
+unregistersymbol(y_coordinate)
+unregistersymbol(z_coordinate)
+unregistersymbol(enable_save)
+unregistersymbol(enable_load)
+dealloc(newmem)
+dealloc(Store_Coordinates)
+
+
+{
+// ORIGINAL CODE - INJECTION POINT: "mp.dll"+B59F0
+
+"mp.dll"+B59C9: D9 41 10                       -  fld dword ptr [ecx+10]
+"mp.dll"+B59CC: D8 A6 E4 07 00 00              -  fsub dword ptr [esi+000007E4]
+"mp.dll"+B59D2: D9 C2                          -  fld st(2)
+"mp.dll"+B59D4: 8B 51 08                       -  mov edx,[ecx+08]
+"mp.dll"+B59D7: D9 5C 24 10                    -  fstp dword ptr [esp+10]
+"mp.dll"+B59DB: D9 C1                          -  fld st(1)
+"mp.dll"+B59DD: 89 96 DC 07 00 00              -  mov [esi+000007DC],edx
+"mp.dll"+B59E3: 8B 41 0C                       -  mov ecx,[ecx+0C]
+"mp.dll"+B59E6: D9 5C 24 14                    -  fstp dword ptr [esp+14]
+"mp.dll"+B59EA: 89 86 E0 07 00 00              -  mov [esi+000007E0],ecx
+// ---------- INJECTING HERE ----------
+"mp.dll"+B59F0: 8B 51 10                       -  mov edx,[ecx+10]
+"mp.dll"+B59F3: D9 C0                          -  fld st(0)
+// ---------- DONE INJECTING  ----------
+"mp.dll"+B59F5: D8 C9                          -  fmul st(0),st(1)
+"mp.dll"+B59F7: D9 C2                          -  fld st(2)
+"mp.dll"+B59F9: D8 CB                          -  fmul st(0),st(3)
+"mp.dll"+B59FB: 89 96 E4 07 00 00              -  mov [esi+000007E4],edx
+"mp.dll"+B5A01: DE C1                          -  faddp 
+"mp.dll"+B5A03: D9 C3                          -  fld st(3)
+"mp.dll"+B5A05: D8 CC                          -  fmul st(0),st(4)
+"mp.dll"+B5A07: DE C1                          -  faddp 
+"mp.dll"+B5A09: D9 FA                          -  fsqrt 
+"mp.dll"+B5A0B: DD DB                          -  fstp st(3)
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>407</ID>
+          <Description>"Save Location (F11)"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>enable_save</Address>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>122</Key>
+              </Keys>
+              <Value>1</Value>
+              <ID>0</ID>
+              <ActivateSound>Activate</ActivateSound>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>408</ID>
+          <Description>"Load Location (F10)"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>enable_load</Address>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Set Value</Action>
+              <Keys>
+                <Key>121</Key>
+              </Keys>
+              <Value>1</Value>
+              <ID>0</ID>
+              <ActivateSound>Activate</ActivateSound>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Code :mov [edx+00000090],ecx</Description>
+      <Address>049E194B</Address>
+      <ModuleName>hw.dll</ModuleName>
+      <ModuleNameOffset>C194B</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>05</Byte>
+        <Byte>8B</Byte>
+        <Byte>48</Byte>
+        <Byte>40</Byte>
+      </Before>
+      <Actual>
+        <Byte>89</Byte>
+        <Byte>8A</Byte>
+        <Byte>90</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>15</Byte>
+        <Byte>9C</Byte>
+        <Byte>BD</Byte>
+        <Byte>0D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov eax,[eax+08]</Description>
+      <Address>1EFC3132</Address>
+      <ModuleName>mp.dll</ModuleName>
+      <ModuleNameOffset>B3132</ModuleNameOffset>
+      <Before>
+        <Byte>48</Byte>
+        <Byte>04</Byte>
+        <Byte>89</Byte>
+        <Byte>4A</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>40</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>42</Byte>
+        <Byte>08</Byte>
+        <Byte>5F</Byte>
+        <Byte>5E</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov ecx,[eax+00000090]</Description>
+      <Address>049E1660</Address>
+      <ModuleName>hw.dll</ModuleName>
+      <ModuleNameOffset>C1660</ModuleNameOffset>
+      <Before>
+        <Byte>A1</Byte>
+        <Byte>9C</Byte>
+        <Byte>BD</Byte>
+        <Byte>0D</Byte>
+        <Byte>05</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>88</Byte>
+        <Byte>90</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>4A</Byte>
+        <Byte>40</Byte>
+        <Byte>8B</Byte>
+        <Byte>15</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov eax,[eax+08]</Description>
+      <Address>1EFB6C66</Address>
+      <ModuleName>mp.dll</ModuleName>
+      <ModuleNameOffset>A6C66</ModuleNameOffset>
+      <Before>
+        <Byte>50</Byte>
+        <Byte>04</Byte>
+        <Byte>89</Byte>
+        <Byte>51</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>40</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>41</Byte>
+        <Byte>08</Byte>
+        <Byte>8B</Byte>
+        <Byte>87</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of fld dword ptr [ecx+10]</Description>
+      <Address>1EFC2F7E</Address>
+      <ModuleName>mp.dll</ModuleName>
+      <ModuleNameOffset>B2F7E</ModuleNameOffset>
+      <Before>
+        <Byte>41</Byte>
+        <Byte>0C</Byte>
+        <Byte>D8</Byte>
+        <Byte>62</Byte>
+        <Byte>04</Byte>
+      </Before>
+      <Actual>
+        <Byte>D9</Byte>
+        <Byte>41</Byte>
+        <Byte>10</Byte>
+      </Actual>
+      <After>
+        <Byte>D8</Byte>
+        <Byte>62</Byte>
+        <Byte>08</Byte>
+        <Byte>D9</Byte>
+        <Byte>C0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov ecx,[ebp+00000090]</Description>
+      <Address>049A3091</Address>
+      <ModuleName>hw.dll</ModuleName>
+      <ModuleNameOffset>83091</ModuleNameOffset>
+      <Before>
+        <Byte>85</Byte>
+        <Byte>8C</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>8D</Byte>
+        <Byte>90</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>55</Byte>
+        <Byte>89</Byte>
+        <Byte>54</Byte>
+        <Byte>24</Byte>
+        <Byte>14</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov edx,[ebp+00000090]</Description>
+      <Address>049A30E8</Address>
+      <ModuleName>hw.dll</ModuleName>
+      <ModuleNameOffset>830E8</ModuleNameOffset>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>89</Byte>
+        <Byte>54</Byte>
+        <Byte>24</Byte>
+        <Byte>24</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>95</Byte>
+        <Byte>90</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>4C</Byte>
+        <Byte>24</Byte>
+        <Byte>28</Byte>
+        <Byte>89</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="unnamed structure" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements/>
+    </Structure>
+    <Structure Name="unnamed structure" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="4" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="8" Vartype="Float" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="4 Bytes" Bytesize="4" RLECount="14" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="Double" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="4 Bytes" Bytesize="4" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="104" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="108" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="116" Vartype="Float" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="124" Vartype="4 Bytes" Bytesize="4" RLECount="15" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="184" Vartype="Pointer" Bytesize="4" RLECount="3" PointerSize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="196" Vartype="Float" Bytesize="4" RLECount="15" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="256" Vartype="Double" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="264" Vartype="4 Bytes" Bytesize="4" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="280" Vartype="Double" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="288" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="292" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="304" Vartype="Float" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="316" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="320" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="324" Vartype="4 Bytes" Bytesize="4" RLECount="7" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="352" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="356" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="360" Vartype="Double" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="368" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="380" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="384" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="396" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="400" Vartype="4 Bytes" Bytesize="4" RLECount="3" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="412" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="416" Vartype="4 Bytes" Bytesize="4" RLECount="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="432" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="436" Vartype="4 Bytes" Bytesize="4" RLECount="7" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="464" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal"/>
+        <Element Offset="468" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="476" Vartype="Double" Bytesize="8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="484" Vartype="4 Bytes" Bytesize="4" RLECount="6" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="508" Vartype="Float" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="512" Vartype="4 Bytes" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="520" Vartype="Pointer" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="524" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="528" Vartype="Float" Bytesize="4" RLECount="2" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="536" Vartype="4 Bytes" Bytesize="4" RLECount="890" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
+</CheatTable>
